@@ -8,24 +8,13 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
-    --bg: #0f0f1a;
-    --card: #1a1a2e;
-    --text: #ffffff;
-    --accent: #f5b301;
-    --accent2: #7b2ff7;
-    --muted: #888;
-    --danger: #e74c3c;
-    --success: #2ecc71;
-    --border: #2a2a40;
+    --bg: #0f0f1a; --card: #1a1a2e; --text: #ffffff;
+    --accent: #f5b301; --accent2: #7b2ff7; --muted: #888;
+    --danger: #e74c3c; --success: #2ecc71; --border: #2a2a40;
   }
   body.light {
-    --bg: #f2f2f7;
-    --card: #ffffff;
-    --text: #1c1c1e;
-    --accent: #f5b301;
-    --accent2: #7b2ff7;
-    --muted: #8e8e93;
-    --border: #e5e5ea;
+    --bg: #f2f2f7; --card: #ffffff; --text: #1c1c1e;
+    --accent: #f5b301; --accent2: #7b2ff7; --muted: #8e8e93; --border: #e5e5ea;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
@@ -60,7 +49,7 @@
     background: linear-gradient(135deg, var(--card), var(--bg));
     border: 1px solid var(--border); border-radius: 18px;
     padding: 16px; text-align: center; cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s;
   }
   .game-card:active { transform: scale(0.97); }
   .game-card .icon { font-size: 36px; margin-bottom: 8px; }
@@ -73,13 +62,16 @@
     transition: opacity 0.2s;
   }
   .btn:active { opacity: 0.8; }
+  .btn:disabled { opacity: 0.5; }
   .btn.secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
   .btn.danger { background: var(--danger); color: #fff; }
+  .btn.crypto { background: linear-gradient(135deg, #2b8cff, #7b2ff7); color: #fff; }
   .input {
     width: 100%; padding: 12px 14px; border-radius: 12px;
     border: 1px solid var(--border); background: var(--bg);
     color: var(--text); font-size: 15px; margin-bottom: 10px;
   }
+  .input:focus { outline: none; border-color: var(--accent); }
   .nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--card); border-top: 1px solid var(--border);
@@ -120,29 +112,18 @@
   .section-title { font-size: 16px; font-weight: 700; margin: 16px 0 8px; }
   .tx-item {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0; border-bottom: 1px solid var(--border);
-    font-size: 13px;
+    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px;
   }
   .tx-item:last-child { border-bottom: none; }
   .tx-amount.pos { color: var(--success); }
   .tx-amount.neg { color: var(--danger); }
-  .badge {
-    display: inline-block; padding: 2px 8px; border-radius: 8px;
-    font-size: 10px; background: var(--accent2); color: #fff;
-  }
   .spinner {
     border: 3px solid var(--border); border-top: 3px solid var(--accent);
     border-radius: 50%; width: 24px; height: 24px;
     animation: spin 0.8s linear infinite; margin: 10px auto;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-  .pulse { animation: pulse 1.5s infinite; }
 
-  /* ===== AUTH SCREEN ===== */
   #auth-screen {
     position: fixed; inset: 0; z-index: 5000;
     background: var(--bg); overflow-y: auto; display: none;
@@ -156,56 +137,72 @@
     width: 88px; height: 88px; border-radius: 50%;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
+    margin: 0 auto 20px; font-size: 44px;
     box-shadow: 0 8px 32px rgba(123,47,247,0.35);
-    font-size: 44px;
   }
-  .auth-title {
-    font-size: 26px; font-weight: 700; text-align: center;
-    margin-bottom: 8px; color: var(--text);
-  }
-  .auth-sub {
-    font-size: 14px; color: var(--muted);
-    text-align: center; margin-bottom: 32px; line-height: 1.5;
-  }
-  .auth-card { background: var(--card); border-radius: 18px; padding: 20px; }
-  .auth-status {
-    margin-top: 16px; font-size: 13px; text-align: center;
-    min-height: 20px; line-height: 1.4;
-  }
+  .auth-title { font-size: 26px; font-weight: 700; text-align: center; margin-bottom: 8px; }
+  .auth-sub { font-size: 14px; color: var(--muted); text-align: center; margin-bottom: 32px; line-height: 1.5; }
+  .auth-card { background: var(--card); border-radius: 18px; padding: 20px; border: 1px solid var(--border); }
+  .auth-status { margin-top: 16px; font-size: 13px; text-align: center; min-height: 20px; }
   .auth-status.ok { color: var(--success); }
   .auth-status.err { color: var(--danger); }
-  .auth-hint {
-    text-align: center; font-size: 12px;
-    color: var(--muted); margin-top: 20px; line-height: 1.5;
+  .auth-hint { text-align: center; font-size: 12px; color: var(--muted); margin-top: 20px; line-height: 1.5; }
+  .auth-hint a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .auth-hint-inline {
+    font-size: 12px; color: var(--muted); text-align: center;
+    margin-top: 10px; line-height: 1.4;
+  }
+  .auth-hint-inline a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .auth-code-input {
+    text-align: center;
+    font-size: 32px;
+    letter-spacing: 12px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    padding-left: 20px !important;
   }
 </style>
 </head>
 <body>
 
-<!-- ===== AUTH SCREEN ===== -->
 <div id="auth-screen">
   <div class="auth-wrap">
     <div class="auth-logo">🎰</div>
     <div class="auth-title">LUCKY PLAY</div>
-    <div class="auth-sub">Введите API-токен, который выдал администратор в боте</div>
+    <div class="auth-sub">Войдите через Telegram — бот пришлёт код подтверждения</div>
 
     <div class="auth-card">
-      <label class="muted">API-токен</label>
-      <input class="input" type="password" id="auth-token" placeholder="LP_..." autocomplete="off" autocapitalize="off" spellcheck="false" />
-      <button class="btn" onclick="doAuthByToken()">🔑 Войти</button>
-      <button class="btn secondary" onclick="openBot()" style="margin-top:8px;">✈️ Открыть @dev1_robot</button>
+      <div id="auth-step-1">
+        <label class="muted">Telegram ID или @username</label>
+        <input class="input" type="text" id="auth-identifier"
+               placeholder="123456789 или @username"
+               autocomplete="off" autocapitalize="off" spellcheck="false" />
+        <button class="btn" id="auth-get-code-btn" onclick="requestAuthCode()">📩 Получить код</button>
+        <button class="btn secondary" onclick="openBot()" style="margin-top:8px;">✈️ Открыть @dev1_robot</button>
+        <div class="auth-hint-inline">
+          Узнать ID можно у <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a>
+        </div>
+      </div>
+
+      <div id="auth-step-2" style="display:none;">
+        <label class="muted">Код из Telegram</label>
+        <input class="input auth-code-input" type="text" id="auth-code"
+               placeholder="000000" inputmode="numeric" maxlength="6" autocomplete="off" />
+        <button class="btn" id="auth-verify-btn" onclick="verifyAuthCode()">✅ Войти</button>
+        <button class="btn secondary" onclick="backToIdentifier()" style="margin-top:8px;">← Назад</button>
+        <div class="auth-hint-inline">Код отправлен в чат с ботом. Действует 5 минут.</div>
+      </div>
+
       <div class="auth-status" id="auth-status"></div>
     </div>
 
     <div class="auth-hint">
-      🔒 Токен создаётся админом командой <code>/genkey &lt;user_id&gt;</code><br>
-      или пользователь может получить его командой <code>/mytoken</code> в боте
+      🔒 Вход безопасен — код приходит только вам
     </div>
   </div>
 </div>
 
-<!-- ===== APP ===== -->
 <div class="app" id="app" style="display:none;">
   <div class="header">
     <div class="logo">LUCKY <span>PLAY</span></div>
@@ -215,7 +212,6 @@
     </div>
   </div>
 
-  <!-- Главная -->
   <div id="page-home">
     <div class="card">
       <div class="muted">Добро пожаловать!</div>
@@ -232,7 +228,6 @@
     </div>
   </div>
 
-  <!-- Игра -->
   <div id="page-game" class="hidden">
     <div class="card">
       <div class="row" style="justify-content:space-between;">
@@ -257,7 +252,6 @@
     </div>
   </div>
 
-  <!-- Кошелёк -->
   <div id="page-wallet" class="hidden">
     <div class="card">
       <div class="muted">Баланс</div>
@@ -266,34 +260,27 @@
         <button class="btn" onclick="showDeposit()">Пополнить</button>
         <button class="btn secondary" onclick="showWithdraw()">Вывести</button>
       </div>
+      <div class="row" style="margin-top:8px;font-size:11px;color:var(--muted);">
+        <div>📥 Пополнено: <b id="total-deposited">0</b> ₽</div>
+        <div>📤 Выведено: <b id="total-withdrawn">0</b> ₽</div>
+      </div>
     </div>
     <div class="section-title">История операций</div>
     <div class="card" id="tx-list"><div class="spinner"></div></div>
   </div>
 
-  <!-- История игр -->
   <div id="page-history" class="hidden">
     <div class="section-title">История игр</div>
     <div class="card" id="game-history"><div class="spinner"></div></div>
   </div>
 
-  <!-- Профиль -->
   <div id="page-profile" class="hidden">
     <div class="card">
       <div style="font-size:20px;font-weight:800;" id="profile-name">Пользователь</div>
       <div class="muted" id="profile-username"></div>
-      <div style="margin-top:12px;">
-        <div class="muted">Телефон</div>
-        <div id="profile-phone">Не указан</div>
-      </div>
-      <div style="margin-top:12px;">
-        <div class="muted">Завершено раундов</div>
-        <div id="profile-rounds">0</div>
-      </div>
-      <div style="margin-top:12px;">
-        <div class="muted">Бонус 500 ₽</div>
-        <div id="profile-bonus">Не получен</div>
-      </div>
+      <div style="margin-top:12px;"><div class="muted">Телефон</div><div id="profile-phone">Не указан</div></div>
+      <div style="margin-top:12px;"><div class="muted">Завершено раундов</div><div id="profile-rounds">0</div></div>
+      <div style="margin-top:12px;"><div class="muted">Бонус 500 ₽</div><div id="profile-bonus">Не получен</div></div>
     </div>
     <div class="card">
       <div class="section-title">Подтверждение телефона</div>
@@ -305,13 +292,11 @@
       </div>
     </div>
     <div class="card">
-      <div class="section-title">API-токен</div>
       <button class="btn secondary" onclick="logout()">🚪 Выйти</button>
     </div>
   </div>
 </div>
 
-<!-- Навигация -->
 <div class="nav" id="bottom-nav" style="display:none;">
   <div class="nav-item active" data-page="home" onclick="nav('home')"><div class="icon">🏠</div>Главная</div>
   <div class="nav-item" data-page="wallet" onclick="nav('wallet')"><div class="icon">💳</div>Кошелёк</div>
@@ -319,30 +304,37 @@
   <div class="nav-item" data-page="profile" onclick="nav('profile')"><div class="icon">👤</div>Профиль</div>
 </div>
 
-<!-- Модальные окна -->
 <div class="modal-overlay" id="modal-deposit">
   <div class="modal">
-    <h3>Пополнение</h3>
+    <h3>💰 Пополнение</h3>
     <input class="input" type="number" id="deposit-amount" placeholder="Сумма (₽)" value="1000" />
-    <select class="input" id="deposit-provider">
-      <option value="oxapay">OxaPay</option>
-      <option value="cryptobot">Crypto Bot</option>
-      <option value="xrocket">xRocket</option>
-    </select>
+    <div class="row" style="margin-bottom:10px;">
+      <button class="btn crypto" onclick="doDeposit('oxapay')">💎 OxaPay</button>
+      <button class="btn crypto" onclick="doDeposit('cryptobot')">🤖 CryptoBot</button>
+    </div>
     <div class="muted" style="margin-bottom:10px;">Бонус 500 ₽ при пополнении от 5 000 ₽</div>
-    <button class="btn" onclick="doDeposit()">Пополнить</button>
-    <button class="btn secondary" style="margin-top:8px;" onclick="closeModal('modal-deposit')">Отмена</button>
+    <button class="btn secondary" onclick="closeModal('modal-deposit')">Отмена</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="modal-withdraw">
   <div class="modal">
-    <h3>Вывод</h3>
+    <h3>📤 Вывод</h3>
     <input class="input" type="number" id="withdraw-amount" placeholder="Сумма (₽)" value="500" />
     <input class="input" type="text" id="withdraw-address" placeholder="Адрес / кошелёк" />
-    <div class="muted" style="margin-bottom:10px;">Мин. 500 ₽ • 5 раундов • Подтверждённый телефон</div>
+    <div class="muted" style="margin-bottom:10px;">Мин. 500 ₽ • 5 раундов • Телефон</div>
     <button class="btn" onclick="doWithdraw()">Вывести</button>
     <button class="btn secondary" style="margin-top:8px;" onclick="closeModal('modal-withdraw')">Отмена</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pay">
+  <div class="modal">
+    <h3 id="pay-title">Оплата</h3>
+    <div id="pay-info" class="muted" style="margin-bottom:12px;"></div>
+    <button class="btn" id="pay-open" onclick="openPayUrl()">💳 Оплатить</button>
+    <button class="btn secondary" id="pay-check" onclick="checkPayment()" style="margin-top:8px;">✅ Я оплатил</button>
+    <button class="btn secondary" style="margin-top:8px;" onclick="closeModal('modal-pay')">Отмена</button>
   </div>
 </div>
 
@@ -351,49 +343,37 @@
 <script>
 // ======================= CONFIG =======================
 const CONFIG = {
-  API_BASE: "",              // тот же origin
+  API_BASE: "http://45.198.224.125:10001",
   BOT_USERNAME: "dev1_robot",
-  API_KEY_VERSION: "v1",
 };
 
-// Сброс токена при обновлении версии
-const savedVer = localStorage.getItem("lp_key_version");
-if (savedVer !== CONFIG.API_KEY_VERSION) {
-  localStorage.removeItem("lp_token");
-  localStorage.setItem("lp_key_version", CONFIG.API_KEY_VERSION);
-}
-
-let APIFY_TOKEN = localStorage.getItem("lp_token") || "";
-
-// ======================= TELEGRAM =======================
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); tg.disableVerticalSwipes?.(); }
 
-// ======================= СОСТОЯНИЕ =======================
 let state = {
   user: null,
   theme: localStorage.getItem("lp_theme") || "dark",
   currentGame: null,
+  payUrl: "",
+  invoiceId: "",
 };
+
+let APIFY_TOKEN = localStorage.getItem("lp_token") || "";
 
 // ======================= API =======================
 async function api(path, method = "GET", body = null) {
-  const headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer " + APIFY_TOKEN,
-    "ngrok-skip-browser-warning": "true",
-  };
+  const headers = { "Content-Type": "application/json" };
+  if (APIFY_TOKEN) headers["Authorization"] = "Bearer " + APIFY_TOKEN;
   const res = await fetch(CONFIG.API_BASE + path, {
     method, headers,
     body: body ? JSON.stringify(body) : null,
   });
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) {
-    toast("❌ Неверный API-токен", "error");
-    setTimeout(() => logout(), 1000);
+    logout();
     throw new Error("Unauthorized");
   }
-  if (!res.ok) throw new Error(data.detail || data.error || "Ошибка запроса");
+  if (!res.ok) throw new Error(data.detail || data.error || "Ошибка");
   return data;
 }
 
@@ -421,22 +401,20 @@ function nav(page) {
   if (page === "history") loadHistory();
   if (page === "profile") loadProfile();
 }
-
 function goHome() { nav("home"); }
 
 function openGame(game) {
   state.currentGame = game;
   const titles = { dice: "🎲 Кости", wheel: "🎡 Колесо", crash: "🚀 Crash", slots: "🎰 Слоты", coin: "🪙 Монетка" };
-  const descs = { dice: "x2.0 • шанс 48%", wheel: "x3.0 • шанс 35%", crash: "x2.5 • шанс 40%", slots: "x3.5 • шанс 30%", coin: "x1.95 • шанс 50%" };
+  const descs = { dice: "x2.0 • 48%", wheel: "x3.0 • 35%", crash: "x2.5 • 40%", slots: "x3.5 • 30%", coin: "x1.95 • 50%" };
   document.getElementById("game-title").textContent = titles[game];
   document.getElementById("game-desc").textContent = descs[game];
   document.getElementById("game-result").style.display = "none";
   nav("game");
 }
-
 function setBet(v) { document.getElementById("bet-input").value = v; }
 
-// ======================= АВТОРИЗАЦИЯ =======================
+// ======================= AUTH =======================
 function showAuthScreen() {
   document.getElementById("auth-screen").style.display = "block";
   document.getElementById("app").style.display = "none";
@@ -449,31 +427,92 @@ function hideAuthScreen() {
 }
 function setAuthStatus(text, type = "") {
   const el = document.getElementById("auth-status");
-  if (!el) return;
   el.textContent = text;
-  el.className = "auth-status" + (type ? " " + type : "");
+  el.className = "auth-status " + type;
 }
 
-async function doAuthByToken() {
-  const input = document.getElementById("auth-token");
-  const token = (input.value || "").trim();
-  if (!token) { setAuthStatus("❌ Введите токен", "err"); return; }
-  setAuthStatus("⏳ Проверка токена...");
-  APIFY_TOKEN = token;
-  try {
-    const user = await api("/api/auth/token", "POST", { token });
-    localStorage.setItem("lp_token", token);
-    state.user = user;
-    setAuthStatus("✅ Успешно!", "ok");
-    setTimeout(() => {
-      hideAuthScreen();
-      updateUI();
-      nav("home");
-    }, 400);
-  } catch (e) {
-    APIFY_TOKEN = "";
-    setAuthStatus("❌ " + e.message, "err");
+async function requestAuthCode() {
+  const input = document.getElementById("auth-identifier");
+  const btn = document.getElementById("auth-get-code-btn");
+  const raw = (input.value || "").trim();
+  if (!raw) { setAuthStatus("❌ Введите ID или @username", "err"); return; }
+
+  const isId = /^\d{5,15}$/.test(raw);
+  const isUsername = /^@?[a-zA-Z][a-zA-Z0-9_]{2,31}$/.test(raw);
+  if (!isId && !isUsername) {
+    setAuthStatus("❌ Введите корректный ID или @username", "err");
+    return;
   }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Отправка...";
+  setAuthStatus("");
+
+  try {
+    const res = await fetch(CONFIG.API_BASE + "/api/auth/request_code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier: raw })
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById("auth-step-1").style.display = "none";
+      document.getElementById("auth-step-2").style.display = "block";
+      document.getElementById("auth-code").focus();
+      setAuthStatus("✅ Код отправлен в Telegram!", "ok");
+    } else {
+      setAuthStatus("❌ " + (data.detail || data.error || "Ошибка"), "err");
+    }
+  } catch (e) {
+    setAuthStatus("❌ Ошибка сети: " + e.message, "err");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "📩 Получить код";
+  }
+}
+
+async function verifyAuthCode() {
+  const code = (document.getElementById("auth-code").value || "").trim();
+  if (!/^\d{6}$/.test(code)) { setAuthStatus("❌ Код должен быть 6 цифр", "err"); return; }
+
+  const btn = document.getElementById("auth-verify-btn");
+  btn.disabled = true;
+  btn.textContent = "⏳ Проверка...";
+  setAuthStatus("");
+
+  try {
+    const res = await fetch(CONFIG.API_BASE + "/api/auth/verify_code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    });
+    const data = await res.json();
+    if (data.success && data.token) {
+      localStorage.setItem("lp_token", data.token);
+      APIFY_TOKEN = data.token;
+      state.user = data.user;
+      setAuthStatus("✅ Успешно!", "ok");
+      setTimeout(() => {
+        hideAuthScreen();
+        updateUI();
+        nav("home");
+      }, 300);
+    } else {
+      setAuthStatus("❌ " + (data.detail || data.error || "Неверный код"), "err");
+    }
+  } catch (e) {
+    setAuthStatus("❌ Ошибка сети: " + e.message, "err");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "✅ Войти";
+  }
+}
+
+function backToIdentifier() {
+  document.getElementById("auth-step-1").style.display = "block";
+  document.getElementById("auth-step-2").style.display = "none";
+  document.getElementById("auth-code").value = "";
+  setAuthStatus("");
 }
 
 function openBot() {
@@ -485,10 +524,9 @@ function logout() {
   APIFY_TOKEN = "";
   state.user = null;
   showAuthScreen();
-  setAuthStatus("");
 }
 
-// ======================= UI =======================
+// ======================= UI UPDATE =======================
 function updateUI() {
   if (!state.user) return;
   document.getElementById("balance").textContent = (state.user.balance || 0).toFixed(2);
@@ -514,9 +552,7 @@ async function playGame() {
     document.getElementById("game-result-text").innerHTML = res.win
       ? `<div style="color:var(--success);font-size:18px;font-weight:800;">🎉 Выигрыш! +${res.payout} ₽</div>`
       : `<div style="color:var(--danger);font-size:18px;font-weight:800;">😢 Проигрыш</div>`;
-  } catch (e) {
-    toast(e.message, "error");
-  }
+  } catch (e) { toast(e.message, "error"); }
 }
 
 // ======================= КОШЕЛЁК =======================
@@ -525,22 +561,23 @@ async function loadWallet() {
     const data = await api("/api/wallet");
     state.user.balance = data.balance;
     updateUI();
+    document.getElementById("total-deposited").textContent = data.total_deposited;
+    document.getElementById("total-withdrawn").textContent = data.total_withdrawn;
     const list = document.getElementById("tx-list");
     if (!data.transactions.length) { list.innerHTML = '<div class="muted">Нет операций</div>'; return; }
     list.innerHTML = data.transactions.map(t => `
       <div class="tx-item">
         <div>
-          <div style="font-weight:600;">${txType(t.type)}</div>
+          <div style="font-weight:600;">${txType(t.type)} ${t.provider ? '· ' + t.provider : ''}</div>
           <div class="muted">${new Date(t.created_at).toLocaleString()}</div>
         </div>
-        <div class="tx-amount ${t.type === 'deposit' || t.type === 'win' || t.type === 'bonus' ? 'pos' : 'neg'}">
-          ${t.type === 'deposit' || t.type === 'win' || t.type === 'bonus' ? '+' : '-'}${t.amount} ₽
+        <div class="tx-amount ${['deposit','win','bonus'].includes(t.type) ? 'pos' : 'neg'}">
+          ${['deposit','win','bonus'].includes(t.type) ? '+' : '-'}${t.amount} ₽
         </div>
       </div>
     `).join("");
   } catch (e) { toast(e.message, "error"); }
 }
-
 function txType(t) {
   return { deposit: "Пополнение", withdraw: "Вывод", bet: "Ставка", win: "Выигрыш", bonus: "Бонус" }[t] || t;
 }
@@ -549,19 +586,45 @@ function showDeposit() { document.getElementById("modal-deposit").classList.add(
 function showWithdraw() { document.getElementById("modal-withdraw").classList.add("show"); }
 function closeModal(id) { document.getElementById(id).classList.remove("show"); }
 
-async function doDeposit() {
+async function doDeposit(provider) {
   const amount = parseFloat(document.getElementById("deposit-amount").value);
-  const provider = document.getElementById("deposit-provider").value;
+  if (!amount || amount < 100) { toast("Минимум 100 ₽", "error"); return; }
+  closeModal("modal-deposit");
   try {
     const res = await api("/api/deposit", "POST", { amount, provider });
     if (res.status === "completed") {
       state.user.balance = res.balance;
       updateUI();
-      toast("Пополнение успешно!", "success");
-    } else {
-      toast("Платёж создан. Ожидайте подтверждения.");
+      toast("✅ Пополнено!", "success");
+    } else if (res.pay_url) {
+      state.payUrl = res.pay_url;
+      state.invoiceId = res.invoice_id;
+      document.getElementById("pay-title").textContent = "💳 Оплата " + provider;
+      document.getElementById("pay-info").innerHTML = `Сумма: <b>${amount} ₽</b><br>Счёт: <code>${res.invoice_id.slice(0,16)}...</code>`;
+      document.getElementById("modal-pay").classList.add("show");
     }
-    closeModal("modal-deposit");
+  } catch (e) { toast(e.message, "error"); }
+}
+
+function openPayUrl() {
+  if (state.payUrl) {
+    if (tg?.openLink) tg.openLink(state.payUrl);
+    else window.open(state.payUrl, "_blank");
+  }
+}
+
+async function checkPayment() {
+  if (!state.invoiceId) return;
+  try {
+    const res = await api("/api/deposit/check", "POST", { invoice_id: state.invoiceId });
+    if (res.status === "completed") {
+      state.user.balance = res.balance;
+      updateUI();
+      closeModal("modal-pay");
+      toast("✅ Оплата подтверждена!", "success");
+    } else {
+      toast("⏳ Ещё не оплачено", "error");
+    }
   } catch (e) { toast(e.message, "error"); }
 }
 
@@ -572,7 +635,7 @@ async function doWithdraw() {
     const res = await api("/api/withdraw", "POST", { amount, address });
     state.user.balance = res.balance;
     updateUI();
-    toast("Вывод оформлен", "success");
+    toast("✅ Вывод оформлен", "success");
     closeModal("modal-withdraw");
   } catch (e) { toast(e.message, "error"); }
 }
@@ -613,7 +676,6 @@ async function requestPhone() {
     const res = await api("/api/phone/request", "POST", { phone });
     document.getElementById("phone-code-block").classList.remove("hidden");
     if (res.demo_code) toast("Демо-код: " + res.demo_code, "success");
-    else toast("Код отправлен в Telegram");
   } catch (e) { toast(e.message, "error"); }
 }
 
@@ -621,31 +683,69 @@ async function verifyPhone() {
   const code = document.getElementById("phone-code").value;
   try {
     await api("/api/phone/verify?code=" + encodeURIComponent(code), "POST");
-    toast("Телефон подтверждён!", "success");
+    toast("✅ Телефон подтверждён", "success");
     loadProfile();
   } catch (e) { toast(e.message, "error"); }
 }
 
 // ======================= СТАРТ =======================
 async function init() {
-  if (!APIFY_TOKEN) {
-    showAuthScreen();
-    return;
+  // 1. Telegram Mini App — автологин
+  const tgUser = tg?.initDataUnsafe?.user;
+  if (tgUser && tgUser.id) {
+    try {
+      const res = await fetch(CONFIG.API_BASE + "/api/auth/telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          init_data: tg.initData || "",
+          user: {
+            id: tgUser.id,
+            first_name: tgUser.first_name || "",
+            last_name: tgUser.last_name || "",
+            username: tgUser.username || "",
+          }
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        localStorage.setItem("lp_token", data.token);
+        APIFY_TOKEN = data.token;
+        state.user = data.user;
+        hideAuthScreen();
+        updateUI();
+        nav("home");
+        return;
+      }
+    } catch (e) {
+      console.warn("Telegram auth failed:", e);
+    }
   }
-  try {
-    const user = await api("/api/auth/token", "POST", { token: APIFY_TOKEN });
-    state.user = user;
-    hideAuthScreen();
-    updateUI();
-    nav("home");
-  } catch (e) {
-    showAuthScreen();
-    setAuthStatus("❌ Сессия истекла. Введите токен.", "err");
+
+  // 2. Сохранённый токен
+  if (APIFY_TOKEN) {
+    try {
+      const user = await api("/api/auth/token", "POST", { token: APIFY_TOKEN });
+      state.user = user;
+      hideAuthScreen();
+      updateUI();
+      nav("home");
+      return;
+    } catch (e) {
+      localStorage.removeItem("lp_token");
+      APIFY_TOKEN = "";
+    }
   }
+
+  // 3. Браузер — экран ввода ID
+  showAuthScreen();
 }
 
-document.getElementById("auth-token")?.addEventListener("keydown", e => {
-  if (e.key === "Enter") doAuthByToken();
+document.getElementById("auth-identifier")?.addEventListener("keydown", e => {
+  if (e.key === "Enter") requestAuthCode();
+});
+document.getElementById("auth-code")?.addEventListener("keydown", e => {
+  if (e.key === "Enter") verifyAuthCode();
 });
 
 init();
