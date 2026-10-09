@@ -179,7 +179,7 @@
                placeholder="123456789 или @username"
                autocomplete="off" autocapitalize="off" spellcheck="false" />
         <button class="btn" id="auth-get-code-btn" onclick="requestAuthCode()">📩 Получить код</button>
-        <button class="btn secondary" onclick="openBot()" style="margin-top:8px;">✈️ Открыть @dev1_robot</button>
+        <button class="btn secondary" onclick="openBot()" style="margin-top:8px;">✈️ Открыть @goncamoney_bot</button>
         <div class="auth-hint-inline">
           Узнать ID можно у <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a>
         </div>
@@ -344,7 +344,7 @@
 // ======================= CONFIG =======================
 const CONFIG = {
   API_BASE: "http://45.198.224.125:10001",
-  BOT_USERNAME: "dev1_robot",
+  BOT_USERNAME: "goncamoney_bot",
 };
 
 const tg = window.Telegram?.WebApp;
@@ -690,7 +690,6 @@ async function verifyPhone() {
 
 // ======================= СТАРТ =======================
 async function init() {
-  // 1. Telegram Mini App — автологин
   const tgUser = tg?.initDataUnsafe?.user;
   if (tgUser && tgUser.id) {
     try {
@@ -722,7 +721,6 @@ async function init() {
     }
   }
 
-  // 2. Сохранённый токен
   if (APIFY_TOKEN) {
     try {
       const user = await api("/api/auth/token", "POST", { token: APIFY_TOKEN });
@@ -737,7 +735,6 @@ async function init() {
     }
   }
 
-  // 3. Браузер — экран ввода ID
   showAuthScreen();
 }
 
